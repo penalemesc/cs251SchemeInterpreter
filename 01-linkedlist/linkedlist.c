@@ -22,7 +22,7 @@ SchemeVal *cons(SchemeVal *newCar, SchemeVal *newCdr)
 // readable format
 void display(SchemeVal *list)
 {
-    while (list->car != NULL)
+    while (list->car != EMPTY_TYPE)
     {
         switch (list->type)
         {
@@ -44,6 +44,31 @@ void display(SchemeVal *list)
         }
         list->car = list->cdr;
     }
+}
+
+// Return a new list that is the reverse of the one that is passed in. All
+// content within the list should be duplicated; there should be no shared
+// memory whatsoever between the original list and the new one.
+//
+// FAQ: What if there are nested lists inside that list?
+// ANS: There won't be for this assignment. There will be later, but that will
+// be after we've got an easier way of managing memory.
+SchemeVal *reverse(SchemeVal *list)
+{
+    SchemeVal *reverseHelper = list; 
+    SchemeVal *reversedPrev;
+    reversedPrev->type = EMPTY_TYPE;
+    SchemeVal *reverseCdr;
+
+    while (reverseHelper != EMPTY_TYPE)
+    {
+        reverseCdr = reverseHelper->cdr;
+        reverseHelper->cdr = reversedPrev->car;
+        
+        reversedPrev = reverseHelper;
+        reverseHelper = reverseCdr;
+    }
+    return reverseHelper;
 }
 
 // questions for dave: how does the output of assert work? Like does it return 1 if not true and 0 if true?

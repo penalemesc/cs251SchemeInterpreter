@@ -1,5 +1,5 @@
 #include "linkedlist.h"
-
+#include <stdio.h>
 // Create a new EMPTY_TYPE value node.
 SchemeVal *makeEmpty()
 {
@@ -22,7 +22,28 @@ SchemeVal *cons(SchemeVal *newCar, SchemeVal *newCdr)
 // readable format
 void display(SchemeVal *list)
 {
-    
+    while (list->car != NULL)
+    {
+        switch (list->type)
+        {
+        case INT_TYPE:
+            printf("The value at this point of the list is: %i\n", list->car->i);
+            break;
+        case DOUBLE_TYPE:
+            printf("The value at this point of the list is: %d\n", list->car->d);
+            break;
+        case STR_TYPE:
+            printf("The value at this point of the list is: %s\n", list->car->s);
+            break;
+        case CONS_TYPE:
+            printf("The value at this point of the list is: %i, %s\n", list->car->i, list->cdr->s);
+            break;
+        case EMPTY_TYPE:
+            printf("The value at this point of the list is: ()\n");
+            break;
+        }
+        list->car = list->cdr;
+    }
 }
 
 // questions for dave: how does the output of assert work? Like does it return 1 if not true and 0 if true?

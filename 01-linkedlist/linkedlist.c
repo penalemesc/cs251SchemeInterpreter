@@ -139,6 +139,14 @@ SchemeVal *cdr(SchemeVal *list)
     return cdrOfList;
 }
 
+SchemeVal *car(SchemeVal *list)
+{
+    assert(list != NULL);
+    SchemeVal *carOfList = list->car;
+    assert(carOfList != NULL);
+    return carOfList;
+}
+
 // Utility to check if pointing to a NULL_TYPE value. Use assertions to make sure
 // that this is a legitimate operation.
 bool isEmpty(SchemeVal *value)

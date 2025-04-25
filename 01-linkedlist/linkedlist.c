@@ -131,7 +131,7 @@ void cleanup(SchemeVal *list)
     assert(list != NULL);
     while (list != NULL)
     {
-
+        
         free(list);
     }
 }

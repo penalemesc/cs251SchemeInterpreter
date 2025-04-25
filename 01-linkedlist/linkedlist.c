@@ -82,22 +82,51 @@ void display(SchemeVal *list)
 // FAQ: What if there are nested lists inside that list?
 // ANS: There won't be for this assignment. There will be later, but that will
 // be after we've got an easier way of managing memory.
-SchemeVal *reverse(SchemeVal *list)
-{
-    SchemeVal *reverseHelper = list;
-    SchemeVal *reversedPrev;
-    reversedPrev->type = EMPTY_TYPE;
-    SchemeVal *reverseCdr;
+// SchemeVal *reverse(SchemeVal *list)
+// {
+//     SchemeVal *reverseHelper = list;
+//     SchemeVal *reversedPrev;
+//     reversedPrev->type = EMPTY_TYPE;
+//     SchemeVal *reverseCdr;
 
-    while (reverseHelper != EMPTY_TYPE)
-    {
-        reverseCdr = reverseHelper->cdr;
-        reverseHelper->cdr = reversedPrev->car;
+//     while (reverseHelper != EMPTY_TYPE)
+//     {
+//         reverseCdr = reverseHelper->cdr;
+//         reverseHelper->cdr = reversedPrev->car;
 
-        reversedPrev = reverseHelper;
-        reverseHelper = reverseCdr;
+//         reversedPrev = reverseHelper;
+//         reverseHelper = reverseCdr;
+//     }
+//     return reverseHelper;
+// }
+
+SchemeVal *reverse(SchemeVal *list) {
+    assert(list != NULL);
+    SchemeVal *reversed = makeEmpty(); // this starts with an empty list
+
+    while (list->type != EMPTY_TYPE) {
+        SchemeVal *copiedVal = malloc(sizeof(SchemeVal));
+        copiedVal->type = list->car->type; //sets types to be the same
+
+        switch (list->car->type) {
+            case INT_TYPE:
+                copiedVal->i = list->car->i;
+                break;
+            case DOUBLE_TYPE:
+                copiedVal->d = list->car->d;
+                break;
+            case STR_TYPE:
+                copiedVal->s = strdup(list->car->s); // this will duplicate string memory
+                break;
+            case EMPTY_TYPE:
+                break;
+            default:
+                break;
+        }
+        reversed = cons(copiedVal, reversed);
+        list = list->cdr;
     }
-    return reverseHelper;
+    return reversed;
 }
 
 // Utility to make it less typing to get cdr value. Use assertions to make sure

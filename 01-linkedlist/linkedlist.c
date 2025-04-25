@@ -22,26 +22,54 @@ SchemeVal *cons(SchemeVal *newCar, SchemeVal *newCdr)
 // readable format
 void display(SchemeVal *list)
 {
-    while (list->car != EMPTY_TYPE)
-    {
-        switch (list->type)
+    if(list->type == EMPTY_TYPE){
+        printf("The value at this point of the list is: ()\n");
+    }
+    else if(list->type == CONS_TYPE){
+        switch (list->car->type)
         {
         case INT_TYPE:
-            printf("The value at this point of the list is: %i\n", list->car->i);
+            printf("The value at this point of the list in the car is an int and is: %i\n", list->car->i);
             break;
         case DOUBLE_TYPE:
-            printf("The value at this point of the list is: %d\n", list->car->d);
+            printf("The value at this point of the list in the car is a double and is: %d\n", list->car->d);
             break;
         case STR_TYPE:
-            printf("The value at this point of the list is: %s\n", list->car->s);
+            printf("The value at this point of the list in the car is a string and is: %s\n", list->car->s);
             break;
         case CONS_TYPE:
-            printf("The value at this point of the list is: %i, %s\n", list->car->i, list->cdr->s);
+            printf("The value at this point of the list in the car is a cons type and is: %i, %s\n", list->car->i, list->cdr->s);
             break;
         case EMPTY_TYPE:
-            printf("The value at this point of the list is: ()\n");
+            printf("The value at this point of the list in the car is: ()\n");
             break;
         }
+
+        switch (list->cdr->type)
+        {
+        case INT_TYPE:
+            printf("The value at this point of the list in the car is an int and is: %i\n", list->car->i);
+            break;
+        case DOUBLE_TYPE:
+            printf("The value at this point of the list in the car is a double and is: %d\n", list->car->d);
+            break;
+        case STR_TYPE:
+            printf("The value at this point of the list in the car is a string and is: %s\n", list->car->s);
+            break;
+        case CONS_TYPE:
+            printf("The value at this point of the list in the car is a cons type and is: %i, %s\n", list->car->i, list->cdr->s);
+            break;
+        case EMPTY_TYPE:
+            printf("The value at this point of the list in the car is: ()\n");
+            break;
+        }
+
+
+    }
+
+    while (list->car != EMPTY_TYPE)
+    {
+        
         list->car = list->cdr;
     }
 }

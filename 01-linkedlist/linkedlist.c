@@ -114,6 +114,35 @@ SchemeVal *reverse(SchemeVal *list)
     return reversed;
 }
 
+void cleanup(SchemeVal *list) {
+    assert(list != NULL);
+
+    while (list->type != EMPTY_TYPE) {
+        SchemeVal *next = list->cdr;
+        switch (list->car->type) {
+            case INT_TYPE:
+                free(list->car);
+                break;
+            case DOUBLE_TYPE:
+                free(list->car);
+                break;
+            case STR_TYPE:
+                free(list->car->s);
+                break;
+            case EMPTY_TYPE:
+                free(list->car);
+                break;
+            case CONS_TYPE:
+                free(list->car);
+                free(list->cdr);
+                break;
+        }
+            
+        list = next;
+    }
+    free(list);
+}
+
 // Utility to make it less typing to get cdr value. Use assertions to make sure
 // that this is a legitimate operation.
 SchemeVal *cdr(SchemeVal *list)

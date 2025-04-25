@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 // Create a new EMPTY_TYPE value node.
 SchemeVal *makeEmpty()
 {
@@ -29,25 +30,6 @@ void display(SchemeVal *list)
         while (list->car->type != EMPTY_TYPE)
         {
             switch (list->car->type)
-            {
-            case INT_TYPE:
-                printf("The value at this point of the list in the car is an int and is: %i\n", list->car->i);
-                break;
-            case DOUBLE_TYPE:
-                printf("The value at this point of the list in the car is a double and is: %f\n", list->car->d);
-                break;
-            case STR_TYPE:
-                printf("The value at this point of the list in the car is a string and is: %s\n", list->car->s);
-                break;
-            case CONS_TYPE:
-                printf("The value at this point of the list in the car is a cons type and is: %i, %s\n", list->car->i, list->cdr->s);
-                break;
-            case EMPTY_TYPE:
-                printf("The value at this point of the list in the car is: ()\n");
-                break;
-            }
-
-            switch (list->cdr->type)
             {
             case INT_TYPE:
                 printf("The value at this point of the list in the car is an int and is: %i\n", list->car->i);
@@ -100,28 +82,31 @@ void display(SchemeVal *list)
 //     return reverseHelper;
 // }
 
-SchemeVal *reverse(SchemeVal *list) {
+SchemeVal *reverse(SchemeVal *list)
+{
     assert(list != NULL);
     SchemeVal *reversed = makeEmpty(); // this starts with an empty list
 
-    while (list->type != EMPTY_TYPE) {
+    while (list->type != EMPTY_TYPE)
+    {
         SchemeVal *copiedVal = malloc(sizeof(SchemeVal));
-        copiedVal->type = list->car->type; //sets types to be the same
+        copiedVal->type = list->car->type; // sets types to be the same
 
-        switch (list->car->type) {
-            case INT_TYPE:
-                copiedVal->i = list->car->i;
-                break;
-            case DOUBLE_TYPE:
-                copiedVal->d = list->car->d;
-                break;
-            case STR_TYPE:
-                copiedVal->s = strdup(list->car->s); // this will duplicate string memory
-                break;
-            case EMPTY_TYPE:
-                break;
-            default:
-                break;
+        switch (list->car->type)
+        {
+        case INT_TYPE:
+            copiedVal->i = list->car->i;
+            break;
+        case DOUBLE_TYPE:
+            copiedVal->d = list->car->d;
+            break;
+        case STR_TYPE:
+            copiedVal->s = strdup(list->car->s); // this will duplicate string memory
+            break;
+        case EMPTY_TYPE:
+            break;
+        case CONS_TYPE:
+            break;
         }
         reversed = cons(copiedVal, reversed);
         list = list->cdr;
@@ -129,11 +114,41 @@ SchemeVal *reverse(SchemeVal *list) {
     return reversed;
 }
 
+// Frees up all memory directly or indirectly referred to by list. This includes strings.
+//
+// FAQ: What if a string being pointed to is a string literal? That throws an
+// error when freeing.
+//
+// ANS: Don't put a string literal into the list in the first place. All strings
+// added to this list should be able to be freed by the cleanup function.
+//
+// FAQ: What if there are nested lists inside that list?
+//
+// ANS: There won't be for this assignment. There will be later, but that will
+// be after we've got an easier way of managing memory.
+void cleanup(SchemeVal *list)
+{
+    assert(list != NULL);
+    while (list != NULL)
+    {
+
+        free(list);
+    }
+}
+
+// Utility to make it less typing to get car value. Use assertions to make sure
+// that this is a legitimate operation.
+SchemeVal *car(SchemeVal *list)
+{
+    return list;
+}
+
 // Utility to make it less typing to get cdr value. Use assertions to make sure
 // that this is a legitimate operation.
 SchemeVal *cdr(SchemeVal *list)
 {
     assert(list != NULL);
+    assert(list == CONS_TYPE);
     SchemeVal *cdrOfList = list->cdr;
     assert(cdrOfList != NULL);
     return cdrOfList;
@@ -151,14 +166,6 @@ bool isEmpty(SchemeVal *value)
     {
         return true;
     }
-    else if (value->car->type == EMPTY_TYPE)
-    {
-        return true;
-    }
-    else if (value->cdr->type == EMPTY_TYPE) // unsure what it means by pointing I assume the first one, but am not fully sure of that 
-    {
-        return true;
-    }
     else
     {
         return false;
@@ -171,11 +178,11 @@ int length(SchemeVal *value)
 {
     assert(value != NULL);
     int size = 0;
-    while (value->car->type != EMPTY_TYPE)
+    while (value->type != EMPTY_TYPE)
     {
         assert(value != NULL);
         size = size + 1;
-        value->car = value->cdr;
+        value = value->cdr;
     }
     return size;
 }

@@ -1,5 +1,7 @@
 #include "linkedlist.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
 // Create a new EMPTY_TYPE value node.
 SchemeVal *makeEmpty()
 {
@@ -22,55 +24,54 @@ SchemeVal *cons(SchemeVal *newCar, SchemeVal *newCdr)
 // readable format
 void display(SchemeVal *list)
 {
-    if(list->type == EMPTY_TYPE){
-        printf("The value at this point of the list is: ()\n");
-    }
-    else if(list->type == CONS_TYPE){
-        switch (list->car->type)
-        {
-        case INT_TYPE:
-            printf("The value at this point of the list in the car is an int and is: %i\n", list->car->i);
-            break;
-        case DOUBLE_TYPE:
-            printf("The value at this point of the list in the car is a double and is: %d\n", list->car->d);
-            break;
-        case STR_TYPE:
-            printf("The value at this point of the list in the car is a string and is: %s\n", list->car->s);
-            break;
-        case CONS_TYPE:
-            printf("The value at this point of the list in the car is a cons type and is: %i, %s\n", list->car->i, list->cdr->s);
-            break;
-        case EMPTY_TYPE:
-            printf("The value at this point of the list in the car is: ()\n");
-            break;
-        }
-
-        switch (list->cdr->type)
-        {
-        case INT_TYPE:
-            printf("The value at this point of the list in the car is an int and is: %i\n", list->car->i);
-            break;
-        case DOUBLE_TYPE:
-            printf("The value at this point of the list in the car is a double and is: %d\n", list->car->d);
-            break;
-        case STR_TYPE:
-            printf("The value at this point of the list in the car is a string and is: %s\n", list->car->s);
-            break;
-        case CONS_TYPE:
-            printf("The value at this point of the list in the car is a cons type and is: %i, %s\n", list->car->i, list->cdr->s);
-            break;
-        case EMPTY_TYPE:
-            printf("The value at this point of the list in the car is: ()\n");
-            break;
-        }
-
-
-    }
-
-    while (list->car != EMPTY_TYPE)
+    if (list->car->type == CONS_TYPE)
     {
-        
-        list->car = list->cdr;
+        while (list->car->type != EMPTY_TYPE)
+        {
+            switch (list->car->type)
+            {
+            case INT_TYPE:
+                printf("The value at this point of the list in the car is an int and is: %i\n", list->car->i);
+                break;
+            case DOUBLE_TYPE:
+                printf("The value at this point of the list in the car is a double and is: %f\n", list->car->d);
+                break;
+            case STR_TYPE:
+                printf("The value at this point of the list in the car is a string and is: %s\n", list->car->s);
+                break;
+            case CONS_TYPE:
+                printf("The value at this point of the list in the car is a cons type and is: %i, %s\n", list->car->i, list->cdr->s);
+                break;
+            case EMPTY_TYPE:
+                printf("The value at this point of the list in the car is: ()\n");
+                break;
+            }
+
+            switch (list->cdr->type)
+            {
+            case INT_TYPE:
+                printf("The value at this point of the list in the car is an int and is: %i\n", list->car->i);
+                break;
+            case DOUBLE_TYPE:
+                printf("The value at this point of the list in the car is a double and is: %f\n", list->car->d);
+                break;
+            case STR_TYPE:
+                printf("The value at this point of the list in the car is a string and is: %s\n", list->car->s);
+                break;
+            case CONS_TYPE:
+                printf("The value at this point of the list in the car is a cons type and is: %i, %s\n", list->car->i, list->cdr->s);
+                break;
+            case EMPTY_TYPE:
+                printf("The value at this point of the list in the car is: ()\n");
+                break;
+            }
+
+            list->car = list->cdr;
+        }
+    }
+    else if (list->car->type == EMPTY_TYPE)
+    {
+        printf("The value at this point of the list is: ()\n");
     }
 }
 
@@ -83,7 +84,7 @@ void display(SchemeVal *list)
 // be after we've got an easier way of managing memory.
 SchemeVal *reverse(SchemeVal *list)
 {
-    SchemeVal *reverseHelper = list; 
+    SchemeVal *reverseHelper = list;
     SchemeVal *reversedPrev;
     reversedPrev->type = EMPTY_TYPE;
     SchemeVal *reverseCdr;
@@ -92,11 +93,40 @@ SchemeVal *reverse(SchemeVal *list)
     {
         reverseCdr = reverseHelper->cdr;
         reverseHelper->cdr = reversedPrev->car;
-        
+
         reversedPrev = reverseHelper;
         reverseHelper = reverseCdr;
     }
     return reverseHelper;
+}
+
+// Utility to make it less typing to get cdr value. Use assertions to make sure
+// that this is a legitimate operation.
+SchemeVal *cdr(SchemeVal *list)
+{
+    return cdr;
+}
+
+// Utility to check if pointing to a NULL_TYPE value. Use assertions to make sure
+// that this is a legitimate operation.
+bool isEmpty(SchemeVal *value)
+{
+    return true;
+}
+
+// Measure length of list. Use assertions to make sure that this is a legitimate
+// operation.
+int length(SchemeVal *value)
+{
+    assert(value != NULL);
+    int size = 0;
+    while (value->car->type != EMPTY_TYPE)
+    {
+        assert(value != NULL);
+        size = size + 1;
+        value->car = value->cdr;
+    }
+    return size;
 }
 
 // questions for dave: how does the output of assert work? Like does it return 1 if not true and 0 if true?

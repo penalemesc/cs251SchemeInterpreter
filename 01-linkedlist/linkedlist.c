@@ -114,35 +114,6 @@ SchemeVal *reverse(SchemeVal *list)
     return reversed;
 }
 
-// Frees up all memory directly or indirectly referred to by list. This includes strings.
-//
-// FAQ: What if a string being pointed to is a string literal? That throws an
-// error when freeing.
-//
-// ANS: Don't put a string literal into the list in the first place. All strings
-// added to this list should be able to be freed by the cleanup function.
-//
-// FAQ: What if there are nested lists inside that list?
-//
-// ANS: There won't be for this assignment. There will be later, but that will
-// be after we've got an easier way of managing memory.
-void cleanup(SchemeVal *list)
-{
-    assert(list != NULL);
-    while (list != NULL)
-    {
-        
-        free(list);
-    }
-}
-
-// Utility to make it less typing to get car value. Use assertions to make sure
-// that this is a legitimate operation.
-SchemeVal *car(SchemeVal *list)
-{
-    return list;
-}
-
 // Utility to make it less typing to get cdr value. Use assertions to make sure
 // that this is a legitimate operation.
 SchemeVal *cdr(SchemeVal *list)

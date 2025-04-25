@@ -104,14 +104,36 @@ SchemeVal *reverse(SchemeVal *list)
 // that this is a legitimate operation.
 SchemeVal *cdr(SchemeVal *list)
 {
-    return cdr;
+    assert(list != NULL);
+    SchemeVal *cdrOfList = list->cdr;
+    assert(cdrOfList != NULL);
+    return cdrOfList;
 }
 
 // Utility to check if pointing to a NULL_TYPE value. Use assertions to make sure
 // that this is a legitimate operation.
 bool isEmpty(SchemeVal *value)
 {
-    return true;
+    assert(value != NULL);
+    /* Tests that likely were not what was asked of us but did it late enough that it made sense
+    assert(value->car->type != NULL);
+    assert(value->cdr->type != NULL); */
+    if (value->type == EMPTY_TYPE)
+    {
+        return true;
+    }
+    else if (value->car->type == EMPTY_TYPE)
+    {
+        return true;
+    }
+    else if (value->cdr->type == EMPTY_TYPE) // unsure what it means by pointing I assume the first one, but am not fully sure of that 
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 // Measure length of list. Use assertions to make sure that this is a legitimate

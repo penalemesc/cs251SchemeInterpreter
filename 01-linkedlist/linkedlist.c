@@ -14,7 +14,7 @@ SchemeVal *makeEmpty()
 // Create a new CONS_TYPE value node.
 SchemeVal *cons(SchemeVal *newCar, SchemeVal *newCdr)
 {
-    SchemeVal *cons = malloc(sizeof(CONS_TYPE));
+    SchemeVal *cons = malloc(sizeof(SchemeVal));
     cons->type = CONS_TYPE;
     cons->car = newCar;
     cons->cdr = newCdr;
@@ -114,31 +114,43 @@ SchemeVal *reverse(SchemeVal *list)
     return reversed;
 }
 
-void cleanup(SchemeVal *list) {
+void cleanup(SchemeVal *list)
+{
     assert(list != NULL);
 
-    while (list->type != EMPTY_TYPE) {
+    while (list->type != EMPTY_TYPE)
+    {
         SchemeVal *next = list->cdr;
-        switch (list->car->type) {
-            case INT_TYPE:
-                free(list->car);
-                break;
-            case DOUBLE_TYPE:
-                free(list->car);
-                break;
-            case STR_TYPE:
-                free(list->car->s);
-                break;
-            case EMPTY_TYPE:
-                free(list->car);
-                break;
-            case CONS_TYPE:
-                free(list->car);
-                free(list->cdr);
-                break;
+        SchemeVal *temp = list;
+        switch (list->car->type)
+        {
+        case INT_TYPE:
+            free(list->car);
+            list = next;
+            free(temp);
+            break;
+        case DOUBLE_TYPE:
+            free(list->car);
+            list = next;
+            free(temp);
+            break;
+        case STR_TYPE:
+            free(list->car->s);
+            list = next;
+            free(temp);
+            break;
+        case EMPTY_TYPE:
+            free(list->car);
+            list = next;
+            free(temp);
+            break;
+        case CONS_TYPE:
+            free(list->car);
+            free(list->cdr);
+            list = next;
+            free(temp);
+            break;
         }
-            
-        list = next;
     }
     free(list);
 }
@@ -148,7 +160,7 @@ void cleanup(SchemeVal *list) {
 SchemeVal *cdr(SchemeVal *list)
 {
     assert(list != NULL);
-    assert(list == CONS_TYPE);
+    assert(list->type == CONS_TYPE);
     SchemeVal *cdrOfList = list->cdr;
     assert(cdrOfList != NULL);
     return cdrOfList;
@@ -157,6 +169,7 @@ SchemeVal *cdr(SchemeVal *list)
 SchemeVal *car(SchemeVal *list)
 {
     assert(list != NULL);
+    assert(list->type == CONS_TYPE);
     SchemeVal *carOfList = list->car;
     assert(carOfList != NULL);
     return carOfList;

@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-
 // Create a new EMPTY_TYPE value node.
 SchemeVal *makeEmpty()
 {
@@ -65,6 +64,24 @@ void display(SchemeVal *list)
 // FAQ: What if there are nested lists inside that list?
 // ANS: There won't be for this assignment. There will be later, but that will
 // be after we've got an easier way of managing memory.
+// SchemeVal *reverse(SchemeVal *list)
+// {
+//     SchemeVal *reverseHelper = list;
+//     SchemeVal *reversedPrev;
+//     reversedPrev->type = EMPTY_TYPE;
+//     SchemeVal *reverseCdr;
+
+//     while (reverseHelper != EMPTY_TYPE)
+//     {
+//         reverseCdr = reverseHelper->cdr;
+//         reverseHelper->cdr = reversedPrev->car;
+
+//         reversedPrev = reverseHelper;
+//         reverseHelper = reverseCdr;
+//     }
+//     return reverseHelper;
+// }
+
 SchemeVal *reverse(SchemeVal *list)
 {
     assert(list != NULL);
@@ -97,18 +114,7 @@ SchemeVal *reverse(SchemeVal *list)
     return reversed;
 }
 
-// Frees up all memory directly or indirectly referred to by list. This includes strings.
-//
-// FAQ: What if a string being pointed to is a string literal? That throws an
-// error when freeing.
-//
-// ANS: Don't put a string literal into the list in the first place. All strings
-// added to this list should be able to be freed by the cleanup function.
-//
-// FAQ: What if there are nested lists inside that list?
-//
-// ANS: There won't be for this assignment. There will be later, but that will
-// be after we've got an easier way of managing memory.
+
 void cleanup(SchemeVal *list)
 {
     assert(list != NULL);
@@ -151,18 +157,7 @@ void cleanup(SchemeVal *list)
     free(list);
 }
 
-// Utility to make it less typing to get car value. Uses assertions to make sure
-// that this is a legitimate operation.
-SchemeVal *car(SchemeVal *list)
-{
-    assert(list != NULL);
-    assert(list->type == CONS_TYPE);
-    SchemeVal *carOfList = list->car;
-    assert(carOfList != NULL);
-    return carOfList;
-}
-
-// Utility to make it less typing to get cdr value. Uses assertions to make sure
+// Utility to make it less typing to get cdr value. Use assertions to make sure
 // that this is a legitimate operation.
 SchemeVal *cdr(SchemeVal *list)
 {
@@ -173,11 +168,23 @@ SchemeVal *cdr(SchemeVal *list)
     return cdrOfList;
 }
 
-// Utility to check if pointing to an EMPTY_TYPE value. Uses assertions to make sure
+SchemeVal *car(SchemeVal *list)
+{
+    assert(list != NULL);
+    assert(list->type == CONS_TYPE);
+    SchemeVal *carOfList = list->car;
+    assert(carOfList != NULL);
+    return carOfList;
+}
+
+// Utility to check if pointing to a NULL_TYPE value. Use assertions to make sure
 // that this is a legitimate operation.
 bool isEmpty(SchemeVal *value)
 {
     assert(value != NULL);
+    /* Tests that likely were not what was asked of us but did it late enough that it made sense
+    assert(value->car->type != NULL);
+    assert(value->cdr->type != NULL); */
     if (value->type == EMPTY_TYPE)
     {
         return true;
@@ -188,7 +195,7 @@ bool isEmpty(SchemeVal *value)
     }
 }
 
-// Measure length of list. Uses assertions to make sure that this is a legitimate
+// Measure length of list. Use assertions to make sure that this is a legitimate
 // operation.
 int length(SchemeVal *value)
 {
@@ -202,3 +209,14 @@ int length(SchemeVal *value)
     }
     return size;
 }
+
+// questions for dave: how does the output of assert work? Like does it return 1 if not true and 0 if true?
+// We have to malloc a list in makeEmpty, how do we calculate the size that we need to malloc it as?
+// Where should we put the behaviours of schemeval type? It is mentioned we should use a switch,
+// thus should we make a schemeval.c that checks what happens when a list is of type x?
+// or does it go into linkedlist.c?
+
+// If code is written correctly then assert is never happening
+// So what we want to check for example is in length we want to make sure that value is never c null, but yes
+// scheme null which means that the check could/should be something like value == null, because if we malloc everything correclty
+// then it will be != because it is of empty_type (which is scheme null, rather than c null)

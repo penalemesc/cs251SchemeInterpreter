@@ -53,5 +53,4 @@ bool isEmpty(SchemeVal *value);
 // operation.
 int length(SchemeVal *value);
 
-
 #endif
